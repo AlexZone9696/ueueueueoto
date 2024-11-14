@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Реферальная система</title>
+  <style>
+    .container {
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+    }
+    .button {
+      display: inline-block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .invite-button {
+      background-color: #1D4ED8;
+    }
+    .copy-button {
+      background-color: #059669;
+    }
+    .referral-item {
+      background-color: #F3F4F6;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+    }
+    .referrer {
+      color: #10B981;
+      margin-bottom: 15px;
+    }
+  </style>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <div id="userInfo"></div>
+  <div class="button invite-button" onclick="inviteFriend()">Пригласить друга</div>
+  <div class="button copy-button" onclick="copyInviteLink()">Скопировать ссылку на приглашение</div>
+</div>
+
+<script>
+  const INVITE_URL = "https://t.me/referral_showcase_bot/start";
+
+  // Получаем параметры initData и startapp из Telegram WebApp
+  const initDataUnsafe = Telegram.WebApp.initDataUnsafe;
+  const userId = initDataUnsafe?.user?.id || "Неизвестный";
+  const startParam = initDataUnsafe?.start_param || "Нет параметра";
+
+  // Отображаем информацию о пользователе и параметре startapp
+  document.getElementById("userInfo").innerHTML = `
+    <p>Ваш user_id: <strong>${userId}</strong></p>
+    <p>Параметр startapp: <strong>${startParam}</strong></p>
+  `;
+
+  function inviteFriend() {
+    const inviteLink = `${INVITE_URL}?startapp=${userId}`;
+    const shareText = "Присоединяйся к этому отличному мини-приложению в Telegram!";
+    const fullUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(shareText)}`;
+    window.open(fullUrl, '_blank');
+  }
+
+  function copyInviteLink() {
+    const inviteLink = `${INVITE_URL}?startapp=${userId}`;
+    navigator.clipboard.writeText(inviteLink).then(() => {
+      alert('Ссылка на приглашение скопирована в буфер обмена!');
+    }).catch(err => {
+      console.error('Не удалось скопировать ссылку:', err);
+    });
+  }
+</script>
+
+</body>
+</html>
